@@ -1,0 +1,52 @@
+{
+    "iotf-service": [
+        {
+            "credentials": {
+                "iotCredentialsIdentifier": "a2g6k39sl6r5",
+                "mqtt_host": "s5d4iv.messaging.internetofthings.ibmcloud.com",
+                "mqtt_u_port": 1883,
+                "mqtt_s_port": 8883,
+                "http_host": "s5d4iv.internetofthings.ibmcloud.com",
+                "org": "s5d4iv",
+                "apiKey": "a-s5d4iv-x3gi3ipoht",
+                "apiToken": "4gaGLuI6h5HiSOdedx"
+            },
+            "syslog_drain_url": null,
+            "volume_mounts": [],
+            "label": "iotf-service",
+            "provider": null,
+            "plan": "iotf-service-asp",
+            "name": "iotp-cost-calculator-iotf-service",
+            "tags": [
+                "internet_of_things",
+                "Internet of Things",
+                "ibm_created",
+                "ibm_dedicated_public",
+                "lite"
+            ]
+        }
+    ],
+    "cloudantNoSQLDB": [
+        {
+            "credentials": {
+                "username": "1f15921c-8500-4ff8-adb3-d8080f9d583a-bluemix",
+                "password": "2b3ee554a5eb0078a791419aa49bd72dbf969058fee08d6b5a5f5acf240ad8a5",
+                "host": "1f15921c-8500-4ff8-adb3-d8080f9d583a-bluemix.cloudant.com",
+                "port": 443,
+                "url": "https://1f15921c-8500-4ff8-adb3-d8080f9d583a-bluemix:2b3ee554a5eb0078a791419aa49bd72dbf969058fee08d6b5a5f5acf240ad8a5@1f15921c-8500-4ff8-adb3-d8080f9d583a-bluemix.cloudant.com"
+            },
+            "syslog_drain_url": null,
+            "volume_mounts": [],
+            "label": "cloudantNoSQLDB",
+            "provider": null,
+            "plan": "Lite",
+            "name": "iotp-cost-calculator-cloudantNoSQLDB",
+            "tags": [
+                "data_management",
+                "ibm_created",
+                "lite",
+                "ibm_dedicated_public"
+            ]
+        }
+    ]
+}

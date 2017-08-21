@@ -18,6 +18,7 @@
   "author": "Kevin Eifinger",
   "license": "ISC",
   "dependencies": {
-    "ibmiotf": "^0.2.10"
+    "ibmiotf": "^0.2.10",
+    "json-size": "1.0.0"
   }
 }

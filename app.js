@@ -1,17 +1,10 @@
 "use strict";
 //Declaration
 const jsonSize = require("json-size");
+const DependencyFactory = require("./dependencyFactory");
 
-//Setup Client
-const Client = require("ibmiotf");
-let appClientConfig = {
-    "org" : "29esfy",
-    "id" : "CostCalculator",
-    "auth-key" : "a-29esfy-2mtus6l9pj",
-    "auth-token" :"m_If0Ke0Pm-msFN3yx"
-};
-
-let appClient = new Client.IotfApplication(appClientConfig);
+let env = DependencyFactory.getEnvironment();
+let appClient = DependencyFactory.getIotClient();
 
 //Setup Json
 let myJson = {"d":{
@@ -22,25 +15,20 @@ let myJson = {"d":{
   "Beruf": "R"
   }
 };
-
+//Start application
+console.log("Starting iotp-cost-calculator")
 //Calculate Size of Json
 let size = jsonSize(myJson);
 console.log("Size of the json:" + size + " byte");
 let today = new Date().toISOString().replace(/T.+/, '');
 console.log("Today: " + today);
-
 appClient.connect();
 
 //on-Connect-start pushing
 appClient.on("connect", function () {
-    //publishing event using the default quality of service
-    //variables
+    console.log("Appclient connected")
     let start = Date.now();
-
-
-
     let counter = 0;
-
     let jsonMax = 10;
 
     //json push to plattform
@@ -48,7 +36,7 @@ appClient.on("connect", function () {
       appClient.publishDeviceEvent("SimDevice","SimDevice", "myEvent", "json", JSON.stringify(myJson), 0, () => {
           counter++;
           if(i == jsonMax) {
-              console.log("messages sent: "+ counter+".");
+              console.log("Messages sent: "+ counter+".");
               appClient.getDataUsage(today, today).then(function(data){
                 console.log(data);
               });
@@ -59,8 +47,10 @@ appClient.on("connect", function () {
   let end = Date.now();
   console.log("Sending the messages took " + ((end - start) / 1000) + " seconds");
   appClient.disconnect();
+  console.log("Appclient disconnected");
+  console.log("App run finished");
 });
 
 appClient.on("error", function (err) {
-    console.log("An wild error appeard! : "+err);
+    console.log("A wild error appeared! : "+err);
 });
