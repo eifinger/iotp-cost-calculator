@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "cfenv": "^1.0.4",
+    "sleep": "^5.1.1",
     "cloudant": "^1.8.0",
     "ibmiotf": "^0.2.10",
     "json-size": "1.0.0",
