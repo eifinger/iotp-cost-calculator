@@ -1,12 +1,12 @@
 const cfenv = require("cfenv");
-const ibm_db = require("ibm_db");
 const ibmiotf = require("ibmiotf");
 const uuid = require("uuid");
 
 const neededServices = [
     "iotf-service",
-    "dashDB"
+    "cloudantNoSQLDB"
 ];
+
 
 module.exports = class DependencyFactory {
     /**
@@ -96,4 +96,6 @@ module.exports = class DependencyFactory {
             "auth-token": deviceToken,
         });
     }
+
+
 };

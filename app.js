@@ -1,10 +1,10 @@
 "use strict";
-//Declaration
 const jsonSize = require("json-size");
-const DependencyFactory = require("./dependencyFactory");
+const Cloudant = require('cloudant');
 
-let env = DependencyFactory.getEnvironment();
-let appClient = DependencyFactory.getIotClient();
+const DependencyFactory = require("./util/dependencyFactory");
+
+const dbName = "iotp-cost-calculator";
 
 //Setup Json
 let myJson = {"d":{
@@ -15,14 +15,24 @@ let myJson = {"d":{
   "Beruf": "R"
   }
 };
-//Start application
-console.log("Starting iotp-cost-calculator")
-//Calculate Size of Json
 let size = jsonSize(myJson);
-console.log("Size of the json:" + size + " byte");
 let today = new Date().toISOString().replace(/T.+/, '');
-console.log("Today: " + today);
-appClient.connect();
+
+let env = DependencyFactory.getEnvironment();
+let appClient = DependencyFactory.getIotClient();
+
+let storage;
+
+initializeCloudant(function(){
+  //Start application
+  console.log("Starting iotp-cost-calculator")
+  //Calculate Size of Json
+  console.log("Size of the json: " + size + " byte");
+  console.log("Today: " + today);
+  appClient.connect();
+});
+
+
 
 //on-Connect-start pushing
 appClient.on("connect", function () {
@@ -38,12 +48,17 @@ appClient.on("connect", function () {
           if(i == jsonMax) {
               console.log("Messages sent: "+ counter+".");
               appClient.getDataUsage(today, today).then(function(data){
-                console.log(data);
+                console.log("Data Usage information:\n" + JSON.stringify(data));
+                let docId = new Date().toISOString().replace(/\..+/, '');
+                console.log("Storing data under id " + docId);
+                storage.insert(data, docId, function(err, body) {
+                  if (!err)
+                    console.log("Successfully stored information:\n" + JSON.stringify(body));
+                });
               });
           }
       });
-  };
-    //Consolelog whether all jsons are sent or not
+  }
   let end = Date.now();
   console.log("Sending the messages took " + ((end - start) / 1000) + " seconds");
   appClient.disconnect();
@@ -54,3 +69,26 @@ appClient.on("connect", function () {
 appClient.on("error", function (err) {
     console.log("A wild error appeared! : "+err);
 });
+
+/**
+*/
+function initializeCloudant(callback){
+  let credentials = DependencyFactory.getCredentials("cloudantNoSQLDB");
+  let cloudant = Cloudant({url: credentials.url});
+  storage;
+  cloudant.db.create(dbName, function(err, data) {
+    if(err){ //If database already exists
+      console.log("Database exists.");
+    } else {
+      console.log("Created database.");
+    }
+  });
+  storage = cloudant.db.use(dbName);
+  storage.list(function(err, body) {
+    if (!err) {
+      console.log("Cloudant contains " +  body.rows.length + " documents.");
+      callback(storage);
+
+    }
+  });
+}

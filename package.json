@@ -8,8 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
-     "node": "6.9.2",
-     "npm": "3.10.10"
+    "node": "6.9.2",
+    "npm": "3.10.10"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,10 @@
   "author": "Kevin Eifinger",
   "license": "ISC",
   "dependencies": {
+    "cfenv": "^1.0.4",
+    "cloudant": "^1.8.0",
     "ibmiotf": "^0.2.10",
-    "json-size": "1.0.0"
+    "json-size": "1.0.0",
+    "uuid": "^3.0.1"
   }
 }
