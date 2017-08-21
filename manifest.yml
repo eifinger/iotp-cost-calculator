@@ -1,0 +1,6 @@
+applications:
+- name: iotp-cost-calculator
+  memory: 256M
+  instances: 1
+  disk_quota: 256M
+  command: node app.js
