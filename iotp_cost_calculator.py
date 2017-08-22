@@ -7,9 +7,16 @@ import time
 import ibmiotf.application
 import ibmiotf.api
 import sys
+from flask import Flask
 
 # Emit Bluemix deployment event
 cf_deployment_tracker.track()
+
+# Start up a fucking webserver so the fucking bluemix wont kill my app
+app = Flask(__name__)
+port = int(os.getenv('PORT', 8000))
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=port, debug=True)
 
 db_name = 'iotp-cost-calculator'
 client = None
