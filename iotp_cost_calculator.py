@@ -100,6 +100,7 @@ for jsoninput in jsonconf['sizes']:
             doc_id = time.asctime( time.localtime(time.time()) ).replace(" ","-")
             information = {"_id": doc_id,"old_data_usage": old_usage['total'],"reported_data_usage": new_usage['total'],"delta_data_usage": new_usage['total'] - old_usage['total'],"assumpted_delta_data_usage": sending_time * actual_size - old_usage['total'],"sending_time": sending_time,"qos": qos,"actual_size": actual_size}
             print("Storing information under doc_id: {}".format(doc_id))
+            db.create_document(information)
 
 appClient.disconnect()
 print("App run finished")
