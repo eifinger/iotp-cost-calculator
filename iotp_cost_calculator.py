@@ -1,6 +1,5 @@
 from cloudant import Cloudant
 import atexit
-import cf_deployment_tracker
 import os
 import json
 import time
@@ -8,9 +7,6 @@ import ibmiotf.application
 import ibmiotf.api
 import sys
 from flask import Flask
-
-# Emit Bluemix deployment event
-cf_deployment_tracker.track()
 
 # Start up a fucking webserver so the fucking bluemix wont kill my app
 #app = Flask(__name__)
