@@ -6,13 +6,6 @@ import time
 import ibmiotf.application
 import ibmiotf.api
 import sys
-from flask import Flask
-
-# Start up a fucking webserver so the fucking bluemix wont kill my app
-#app = Flask(__name__)
-#port = int(os.getenv('PORT', 8000))
-#if __name__ == '__main__':
-#    app.run(host='0.0.0.0', port=port, debug=True)
 
 db_name = 'iotp-cost-calculator'
 client = None
@@ -101,9 +94,13 @@ for jsoninput in jsonconf['sizes']:
             new_usage = apiClient.getDataTraffic(usage_params)
             print("Data Usage Information: {}".format(new_usage))
             doc_id = time.asctime( time.localtime(time.time()) ).replace(" ","-")
-            information = {"_id": doc_id,"old_data_usage": old_usage['total'],"reported_data_usage": new_usage['total'],"delta_data_usage": new_usage['total'] - old_usage['total'],"assumpted_delta_data_usage": sending_time * actual_size - old_usage['total'],"sending_time": sending_time,"qos": qos,"actual_size": actual_size}
+            information = {"_id": doc_id,"old_data_usage": old_usage['total'],"reported_data_usage": new_usage['total'],"delta_data_usage": new_usage['total'] - old_usage['total'],"assumpted_delta_data_usage": sending_time * actual_size,"sending_time": sending_time,"qos": qos,"actual_size": actual_size}
             print("Storing information under doc_id: {}".format(doc_id))
-            db.create_document(information)
+            new_doc = db.create_document(information)
+            if new_doc.exists():
+                print("Successfully stored information")
+            old_usage = new_usage
+            print("old_usage is now: {}".format(old_usage))
 
 appClient.disconnect()
 print("App run finished")
