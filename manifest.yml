@@ -3,5 +3,5 @@ applications:
   memory: 256M
   instances: 1
   disk_quota: 256M
-  command: python iotp-cost-calculator.py
+  command: python iotp_cost_calculator.py
   no-route: true
