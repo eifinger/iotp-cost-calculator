@@ -1,7 +1,7 @@
 applications:
 - name: iotp-cost-calculator
-  memory: 256M
+  memory: 4096M
   instances: 1
-  disk_quota: 256M
+  disk_quota: 4096M
   command: python iotp_cost_calculator.py
   no-route: true
