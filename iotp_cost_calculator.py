@@ -90,6 +90,8 @@ apiClient = ibmiotf.api.ApiClient(appClientConfig)
 
 ############################ Calculator Code ###################################
 print("Starting iotp-cost-calculator")
+print("Waiting {} seconds to be sure no old runs interfer with usage reporting").format(wait_time)
+time.sleep(wait_time)
 qos_levels = [0, 1, 2];
 sending_times = [10, 100, 1000, 10000, 100000, 1000000];
 
@@ -123,7 +125,9 @@ for sending_time in sending_times:
                     print("i is {}. Mod is 0. Waiting 60 seconds".format(i))
                     time.sleep(60)
                     times_interrupted+=1
-                appClient.publishEvent(device_type, device_id, "calculator-event", "json", jsonconf['sizes'][jsoninput], qos=qos)
+                send_success = 0
+                while(not send_success):
+                    send_success = appClient.publishEvent(device_type, device_id, "calculator-event", "json", jsonconf['sizes'][jsoninput], qos=qos)
             time_took = round(time.time()-t0, 3)-(10*times_interrupted)
             appClient.disconnect()
             print("Finished sending messages")
