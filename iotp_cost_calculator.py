@@ -128,6 +128,9 @@ for sending_time in sending_times:
                 send_success = 0
                 while(not send_success):
                     send_success = appClient.publishEvent(device_type, device_id, "calculator-event", "json", jsonconf['sizes'][jsoninput], qos=qos)
+                    if(not send_success):
+                        print("send_success is false. Trying again")
+                        time.sleep(1)
             time_took = round(time.time()-t0, 3)-(10*times_interrupted)
             appClient.disconnect()
             print("Finished sending messages")
