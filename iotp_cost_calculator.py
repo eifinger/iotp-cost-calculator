@@ -44,10 +44,14 @@ if 'cloudantNoSQLDB' in vcap:
     password = creds['password']
     url = 'https://' + creds['host']
     client = Cloudant(user, password, url=url, connect=True)
-    db = client[db_name]
-    if db.exists():
-        print("Successfully connected to database {}".format(db_name))
-    else:
+    try:
+        db = client[db_name]
+        if db.exists():
+            print("Successfully connected to database {}".format(db_name))
+        else:
+            db = client.create_database(db_name, throw_on_exists=True)
+            print("Successfully created database {}".format(db_name))
+    except KeyError:
         db = client.create_database(db_name, throw_on_exists=True)
         print("Successfully created database {}".format(db_name))
     print("Database contains {} documents".format(db.doc_count()))
