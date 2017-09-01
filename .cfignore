@@ -1,2 +1,4 @@
 node_modules
 virtualenv
+vcap-local-mytest.json
+vcap-local.json

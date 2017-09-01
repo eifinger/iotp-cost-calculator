@@ -1,3 +1,4 @@
 node_modules/
 virtualenv/
-.jshint
+vcap-local-mytest.json
+vcap-local.json
