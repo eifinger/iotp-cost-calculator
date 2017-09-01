@@ -58,10 +58,23 @@ if 'cloudantNoSQLDB' in vcap:
 else:
     sys.exit("No cloudantNoSQLDB in vcap found")
 
+# Log version (git commit hash)
+if os.path.isfile('VERSION'):
+    with open('VERSION') as f:
+        version = f.readline()
+        date = f.readline()
+        print("Running git commit: {}This was last verified: {}".format(version,date))
+else:
+    print("Could not find VERSION file")
+
 # Load input jsons
 if os.path.isfile('jsonconf.json'):
     with open('jsonconf.json') as f:
         jsonconf = json.load(f)
+
+#Setup ibmiotf
+if not 'iotf-service' in vcap:
+    sys.exit("No iotf-service in VCAP_SERVICES")
 
 #Setup ibmiotf
 appClientConfig = {
@@ -72,7 +85,6 @@ appClientConfig = {
     "auth-token": vcap['iotf-service'][0]['credentials']['apiToken'],
   }
 appClient = ibmiotf.application.Client(appClientConfig)
-appClient.connect()
 apiClient = ibmiotf.api.ApiClient(appClientConfig)
 
 
@@ -105,13 +117,15 @@ for sending_time in sending_times:
             t0 = time.time()
             times_interrupted = 0
             print("Starting to send messages")
+            appClient.connect()
             for i in range(0,sending_time):
-                if (i+1)%100002 == 0:
+                if (i+1)%50002 == 0:
                     print("i is {}. Mod is 0. Waiting 60 seconds".format(i))
                     time.sleep(60)
                     times_interrupted+=1
                 appClient.publishEvent(device_type, device_id, "calculator-event", "json", jsonconf['sizes'][jsoninput], qos=qos)
             time_took = round(time.time()-t0, 3)-(10*times_interrupted)
+            appClient.disconnect()
             print("Finished sending messages")
             print("Took {} seconds".format(time_took))
             print("Waiting {} seconds before getting reported DataUsage".format(wait_time))
@@ -132,7 +146,6 @@ for sending_time in sending_times:
             old_usage = new_usage
             print("information: {}".format(information))
 
-appClient.disconnect()
 print("App run finished")
 
 @atexit.register
