@@ -59,11 +59,12 @@ else:
     sys.exit("No cloudantNoSQLDB in vcap found")
 
 # Log version (git commit hash)
+version = None
 if os.path.isfile('VERSION'):
     with open('VERSION') as f:
-        version = f.readline()
-        date = f.readline()
-        print("Running git commit: {}This was last verified: {}".format(version,date))
+        version = f.readline().replace("\n","")
+        date = f.readline().replace("\n","")
+        print("Running git commit: {}. This was last verified: {}".format(version,date))
 else:
     print("Could not find VERSION file")
 
@@ -142,7 +143,7 @@ for sending_time in sending_times:
             print("Data Usage Information: {}".format(new_usage))
             storage_datetime = time.asctime( time.localtime(time.time()) ).replace(" ","-")
             storage_timestamp = time.time()
-            information = {"_id": doc_id,"storage_datetime": storage_datetime,"storage_timestamp": storage_timestamp,"old_data_usage": old_usage['total'],"reported_data_usage": new_usage['total'],"delta_data_usage": new_usage['total'] - old_usage['total'],"assumed_delta_data_usage": sending_time * actual_size,"sending_time": sending_time,"qos": qos,"actual_size": actual_size, "time_took": time_took}
+            information = {"_id": doc_id,"storage_datetime": storage_datetime,"storage_timestamp": storage_timestamp,"old_data_usage": old_usage['total'],"reported_data_usage": new_usage['total'],"delta_data_usage": new_usage['total'] - old_usage['total'],"assumed_delta_data_usage": sending_time * actual_size,"sending_time": sending_time,"qos": qos,"actual_size": actual_size, "time_took": time_took, "version": version}
             print("Storing information under doc_id: {}".format(doc_id))
             try:
                 new_doc = db.create_document(information,throw_on_exists=True)
