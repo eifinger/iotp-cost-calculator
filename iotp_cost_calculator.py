@@ -94,7 +94,7 @@ print("Starting iotp-cost-calculator")
 print("Waiting {} seconds to be sure no old runs interfer with usage reporting").format(wait_time)
 time.sleep(wait_time)
 qos_levels = [0, 1, 2];
-sending_times = [10, 100, 1000, 10000, 100000, 1000000];
+sending_times = [1000000];
 
 usage_params = {'start': start_date, 'end': time.strftime("%Y-%m-%d")}
 old_usage = apiClient.getDataTraffic(usage_params)
@@ -123,19 +123,21 @@ for sending_time in sending_times:
             appClient.connect()
             for i in range(0,sending_time):
                 if (i+1)%50002 == 0:
-                    print("i is {}. Mod is 0. Waiting 60 seconds".format(i))
-                    time.sleep(60)
-                    times_interrupted+=1
+                    print("i is {}. Mod is 0. Waiting 10 seconds".format(i))
+                    #time.sleep(10)
+                    #times_interrupted+=1
                 send_success = 0
                 while(not send_success):
                     send_success = appClient.publishEvent(device_type, device_id, "calculator-event", "json", jsonconf['sizes'][jsoninput], qos=qos)
                     if(not send_success):
                         print("send_success is false. Trying again")
                         time.sleep(1)
-            time_took = round(time.time()-t0, 3)-(10*times_interrupted)
+            time_took = round(time.time()-t0, 3)
             appClient.disconnect()
             print("Finished sending messages")
             print("Took {} seconds".format(time_took))
+            time_took -= (10*times_interrupted)
+            print("Took {} seconds without interrupts".format(time_took))
             print("Waiting {} seconds before getting reported DataUsage".format(wait_time))
             time.sleep(wait_time)
             usage_params = {'start': start_date, 'end': time.strftime("%Y-%m-%d")}
