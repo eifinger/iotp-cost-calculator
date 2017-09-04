@@ -122,6 +122,10 @@ for sending_time in sending_times:
             print("Starting to send messages")
             appClient.connect()
             for i in range(0,sending_time):
+                if (i+1)%100002 == 0:
+                    print("i is {}. Mod is 0. Reconnecting the client to free memory".format(i))
+                    appClient.disconnect()
+                    appClient.connect()
                 send_success = 0
                 while(not send_success):
                     send_success = appClient.publishEvent(device_type, device_id, "calculator-event", "json", jsonconf['sizes'][jsoninput], qos=qos)
