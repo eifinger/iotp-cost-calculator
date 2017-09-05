@@ -86,6 +86,7 @@ appClientConfig = {
     "auth-token": vcap['iotf-service'][0]['credentials']['apiToken'],
   }
 appClient = ibmiotf.application.Client(appClientConfig)
+appClient.connect()
 apiClient = ibmiotf.api.ApiClient(appClientConfig)
 
 
@@ -120,19 +121,16 @@ for sending_time in sending_times:
             t0 = time.time()
             times_interrupted = 0
             print("Starting to send messages")
-            appClient.connect()
+            old_send_messages = appClient.messages
             for i in range(0,sending_time):
-                if (i+1)%100002 == 0:
-                    print("i is {}. Mod is 0. Reconnecting the client to free memory".format(i))
-                    appClient.disconnect()
-                    appClient.connect()
                 send_success = 0
                 while(not send_success):
                     send_success = appClient.publishEvent(device_type, device_id, "calculator-event", "json", jsonconf['sizes'][jsoninput], qos=qos)
                     if(not send_success):
                         print("send_success is false. Trying again")
+                while(appClient.messages < old_send_messages+i+1):
+                    pass
             time_took = round(time.time()-t0, 3)
-            appClient.disconnect()
             print("Finished sending messages")
             print("Took {} seconds".format(time_took))
             print("Waiting {} seconds before getting reported DataUsage".format(wait_time))
